@@ -72,21 +72,21 @@ function showDetails(item) {
   
   pokemonRepository.loadDetails(item)
     .then(() => {
-       $modalContainer.classList.add("modal-visible");
-       $overlay.classList.add("overlay-visible");
-       $modalContainer.classList.remove("modal");
-       $pokemonName.textContent = item.name;
+       $modalContainer.removeClass("modal-visible");
+       $overlay.addclassList("overlay-visible");
+       $modalContainer.removeclassList("modal");
+       $pokemonName.text(item.name);
        $pokemonImg.src = item.imageUrl;
        $pokemonHeight.textContent = item.height;
        $pokemonWeight.textContent = item.weight;
-        $pokemonType.textContent = item.type;
+       $pokemonType.textContent = item.type;
     });
 }
 
 function hideDetails() {
-    $modalContainer.classList.remove("modal-visible");
-    $overlay.classList.remove("overlay-visible");
-    $modalContainer.classList.add("modal");
+    $modalContainer.remove.classList("modal-visible");
+    $overlay.remove.classList("overlay-visible");
+    $modalContainer.add.classList("modal");
   }
 
   document.querySelector(".modal-close").addEventListener("click", () => {

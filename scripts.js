@@ -65,19 +65,19 @@ var pokemonRepository = (() => {
         // then we add the pokemon to the HTML using JQuery
     var $modalContainer = $("modal-visible");
     var $overlay = $("overlay-visible");
-    var $modalContainer = $("modal");
+    var $modalContainer = $(removeClass("modal");
     var $pokemonName = $(item.name);
     var $pokemonImg = $("src", item.imageUrl);
     var $pokemonHeight = $(item.height);
     var $pokemonWeight = $(item.weight);
-        //$pokemonType.text(item.type); -- doesn't exist as a variable above nor in the HTML (What should I do then?)
+        //$pokemonType.text(item.type); -- doesn't exist as a variable above nor in the HTML
       });
   }
 ​
   function hideDetails() {
-    $modalContainer.classList.remove("modal-visible");
-    $overlay.classList.remove("overlay-visible");
-    $modalContainer.classList.add("modal");
+    $modalContainer.removeClass("modal-visible");
+    $overlay.remove.classList("overlay-visible");
+    $modalContainer.addClass("modal-visable");
   }
 ​
   document.querySelector(".modal-close").addEventListener("click", () => {
