@@ -64,7 +64,7 @@ var pokemonRepository = (() => {
     pokemonRepository.loadDetails(item)
       .then(() => {
         // then we add the pokemon to the HTML using the JQuery variables we set above
-        $modalContainer.addClass("modal");
+        $modalContainer.addClass("modal-visible");
         $overlay.addClass("overlay-visible");
         $modalContainer.removeClass("modal");
         $pokemonName.text(item.name);
@@ -75,7 +75,7 @@ var pokemonRepository = (() => {
   }
 ​
   function hideDetails() {
-    $modalContainer.removeClass("modal");
+    $modalContainer.removeClass("modal-visible");
     $overlay.removeClass("overlay-visible");
     $modalContainer.addClass("modal");
     $pokemonName.text('');
