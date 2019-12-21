@@ -16,7 +16,7 @@ var pokemonRepository = (() => {
   var $pokemonName = $(".pokeman-name") // <h1 class="pokemon-name"></h1>
   var $pokemonImg = $(".pokemon-img"); // <img class="pokemon-img" src="" alt="">
   var $pokemonHeight = $(".pokemon-height"); // <p class="height"> .. </p>
-  var $pokemonWeight = $(".pokemon-weight");
+  var $pokemonWeight = $(".pokemon-weight"); // <p class="weight"> .. </p>
 ​
   function loadList() {
     return $.ajax(apiUrl)
@@ -64,7 +64,7 @@ var pokemonRepository = (() => {
     pokemonRepository.loadDetails(item)
       .then(() => {
         // then we add the pokemon to the HTML using the JQuery variables we set above
-        $modalContainer.addClass("modal-visible");
+        $modalContainer.addClass("modal");
         $overlay.addClass("overlay-visible");
         $modalContainer.removeClass("modal");
         $pokemonName.text(item.name);
@@ -75,7 +75,7 @@ var pokemonRepository = (() => {
   }
 ​
   function hideDetails() {
-    $modalContainer.removeClass("modal-visible");
+    $modalContainer.removeClass("modal");
     $overlay.removeClass("overlay-visible");
     $modalContainer.addClass("modal");
     $pokemonName.text('');
