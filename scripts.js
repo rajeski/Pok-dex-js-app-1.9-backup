@@ -1,23 +1,26 @@
 var pokemonRepository = (() => {
   var repository = [];
-  var apiUrl = 'https://pokeapi.co/api/v2/pokemon/';
-  /**
-   * With JQuery to access an element in a HTML page we can use a class or id. Using the 
+  var apiUrl = "https://pokeapi.co/api/v2/pokemon/?limit=150";
+  /** Glen's notes: 
+   * With JQuery to access an element in an HTML page we can use a class or id. Using the
    * '$' allows us to use JQuery to modify the element. We can add or remove classes or we can
-   * animate it various ways. 
-   * 
+   * animate it in various ways.
+   *
    * The values below (variables) are directly linked to HTML elements in your 'index.html'.
-   * We can now access them using JQuery. We are using their class to specificy which element we want
+   * We can now access them using JQuery. We are using their class to specify which element we want
    * to assign to each value. The class allows us to be specific with which <div> we want to modify
    */
-​
-  var $overlay = $('.overlay'); // <div class="overlay"> ..</div>
+ 
+  var $overlay = $('.overlay'); // <div class="overlay"> ... </div>
   var $modalContainer = $(".modal"); // <div class='modal'> ... </div>
+  // Glen: I think a var has to be assigned somewhere in here to associate with what I am trying 
+  // to do with line 58 below < < < 
   var $pokemonName = $(".pokeman-name") // <h1 class="pokemon-name"></h1>
   var $pokemonImg = $(".pokemon-img"); // <img class="pokemon-img" src="" alt="">
-  var $pokemonHeight = $(".pokemon-height"); // <p class="height"> .. </p>
-  var $pokemonWeight = $(".pokemon-weight"); // <p class="weight"> .. </p>
-​
+  var $pokemonHeight = $(".pokemon-height"); // <p class="height"> ... </p>
+  var $pokemonWeight = $(".pokemon-weight"); // <p class="weight"> ... </p>
+  var $pokemonType = $(".pokemon-type"); // <p class=type"> ... </p> 
+ 
   function loadList() {
     return $.ajax(apiUrl)
       .then(function (json) {
@@ -33,11 +36,11 @@ var pokemonRepository = (() => {
         console.error(e);
       });
   }
-​
+ 
   function add(item) {
     repository.push(item);
   }
-​
+ 
   function loadDetails(item) {
     var url = item.detailsUrl;
     return fetch(url)
@@ -47,19 +50,24 @@ var pokemonRepository = (() => {
         item.height = details.height;
       }).catch(err => console.log(err))
   }
-​
+ 
   function addListItem(pokemon) {
-​
-    var $pokemonList = $(".pokemon-list"); //Assign the <ul class="pokemon-list"> to a variable
-    var $listItem = $("<li>"); //Create a HTML <li> element 
-    var $button = $('<button>').text(pokemon.name); //Create a <button> element and add the pokemon's name to the button
-    $pokemonList.append($listItem); //Append the <li> element to the <ul>
-    $listItem.append($button); //Append the <button to the <li> previously appended 
-    $button.on('click', function (event) { //Finally, add a click event to each button 
-      showDetails(pokemon); //The click will run the showDetails function on 'click' 
+    var $pokemonList = $(".pokemon-list"); // Assign the <ul class="pokemon-list"> to a variable
+    var $listItem = $("<li>"); // Create a HTML <li> element
+  // > > > Glen: I think line 58 is the code which displayed the blue buttons previously < < < 
+  // > > > If so, I tried unsuccessfully to rewrite this code but failed!? < < < 
+  // > > > Please see the "Before" screenshot for reference < < < 
+    var $button = $('<button>').text(pokemon.name); // Create a <button> element and add the pokemon's name to the button
+    $pokemonList.append($listItem); // Append the <li> element to the <ul>
+    $listItem.append($button); // Append the <button to the <li> previously appended
+    $button.on('click', function (event) { // Finally, add a click event to each button
+      showDetails(pokemon); // The click will run the showDetails function on 'click'
     });
   }
-​
+
+  // > > > Glen: Is it in this part of the code which displayed the blue buttons previously? < < < 
+  // > > > If so, I tried unsuccessfully to rewrite this code but failed!? < < < 
+  // > > > Please see the "Before" screenshot for reference < < < 
   function showDetails(item) {
     pokemonRepository.loadDetails(item)
       .then(() => {
@@ -71,9 +79,10 @@ var pokemonRepository = (() => {
         $pokemonImg.attr("src", item.imageUrl);
         $pokemonHeight.text(item.height);
         $pokemonWeight.text(item.weight);
+        $pokemonType.text(item.type);
       });
   }
-​
+ 
   function hideDetails() {
     $modalContainer.removeClass("modal-visible");
     $overlay.removeClass("overlay-visible");
@@ -82,19 +91,19 @@ var pokemonRepository = (() => {
     $pokemonImg.attr("src", '');
     $pokemonHeight.text('');
     $pokemonWeight.text('');
+    $pokemonType.text(''); 
   }
-​
   $(".modal-close").on("click", () => {
     hideDetails();
   });
-​
+ 
   $(document).keyup(function (event) {
     console.log('PRSSES', event);
     if (event.key === 'Escape' && $modalContainer.hasClass('modal-visible')) {
       hideDetails();
     }
   });
-​
+ 
   $overlay.on('click', (e) => {
     var target = e.target;
     console.log(target);
@@ -102,11 +111,11 @@ var pokemonRepository = (() => {
       hideDetails();
     }
   });
-​
+ 
   function getAll() {
     return repository;
   }
-​
+
   return {
     loadList,
     loadDetails,
@@ -115,9 +124,7 @@ var pokemonRepository = (() => {
     getAll
   };
 })();
-​
-​
-​
+
 pokemonRepository.loadList()
   .then(() => {
     pokemonRepository.getAll().forEach(pokemon => {

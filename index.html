@@ -3,20 +3,35 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Pokédex Original 150 App</title>
     <link rel="shortcut icon" href="img/favicon.ico">
     <link rel="stylesheet" type="text/css" href="css/style.css">
   </head>
   <body>
+    <header class="header-body">
+      <h1 class="header-title">The Essential 150</h1>
+    </header>
       <ul class="pokemon-list"></ul>
       <div class="overlay">
       <div class='modal'>
-      <button class="modal-close">Close</button>
+      <button class="modal-close">X</button>
       <h1 class="pokemon-name"></h1>
-      <img class="pokemon-img" src="" alt="">
-      <p class="height">Height: <span class="pokemon-height"></span></p>
-      <p class="weight">Weight: <span class="pokemon-weight"></span></p>
+      <hr>
+      <div class="pokemon-info">
+        <div class="img-div">
+          <img class="pokemon-img" src="">
+        </div>
+        <div class="modal-details">
+          <p class="weight">Weight: <span class="pokemon-weight"></span></p>
+          <br>
+          <p class="height">Height: <span class="pokemon-height"></span></p>
+          <br>
+          <p class="type">Type: <span class="pokemon-type"></span></p>
+        </div>
+      </div>
     </div>
+  </div>
   </div>
   <footer class="page-footer">
     <script>
@@ -25,6 +40,6 @@
   </footer>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   </script>
-    <script src="js/scripts.js"></script>
+    <script src="scripts.js"></script>
   </body>
 </html>
