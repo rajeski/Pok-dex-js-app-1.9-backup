@@ -78,6 +78,7 @@ var pokemonRepository = (() => {
         $pokemonImg.attr("src", item.imageUrl);
         $pokemonHeight.text(item.height);
         $pokemonWeight.text(item.weight);
+        $pokemonTypes.text(item.types);
       });
   }
  
@@ -89,7 +90,6 @@ var pokemonRepository = (() => {
     $pokemonImg.attr("src", '');
     $pokemonHeight.text('');
     $pokemonWeight.text('');
-    $pokemonType.text(''); 
   }
   $(".modal-close").on("click", () => {
     hideDetails();
