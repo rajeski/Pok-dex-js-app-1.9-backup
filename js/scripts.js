@@ -1,126 +1,131 @@
 var pokemonRepository = (() => {
   var repository = [];
   var apiUrl = "https://pokeapi.co/api/v2/pokemon/?limit=150";
-  var $modalContainer = document.querySelector(".modal");
-  var $overlay = document.querySelector(".overlay");
-
+  /** Glen's notes: 
+   * With JQuery to access an element in an HTML page we can use a class or id. Using the
+   * '$' allows us to use JQuery to modify the element. We can add or remove classes or we can
+   * animate it in various ways.
+   *
+   * The values below (variables) are directly linked to HTML elements in your 'index.html'.
+   * We can now access them using JQuery. We are using their class to specify which element we want
+   * to assign to each value. The class allows us to be specific with which <div> we want to modify
+   */
+ 
+  var $overlay = $('.overlay'); // <div class="overlay"> ... </div>
+  var $modalContainer = $(".modal"); // <div class='modal'> ... </div>
+  var $pokemonName = $(".pokeman-name") // <h1 class="pokemon-name"></h1>
+  var $pokemonImg = $(".pokemon-img"); // <img class="pokemon-img" src="" alt="">
+  var $pokemonHeight = $(".pokemon-height"); // <p class="height"> ... </p>
+  var $pokemonWeight = $(".pokemon-weight"); // <p class="weight"> ... </p>
+  var $pokemonTypes = $(".pokemon-types"); // <p class=type"> ... </p> 
+ 
   function loadList() {
-    return fetch(apiUrl)
-      .then(res => res.json())
-      .then(pokemonList => {
-        var response = pokemonList.results;
-        response.forEach((item, index) => {
-          var nameCapitalized = item.name.charAt(0).toUpperCase() + item.name.slice(1)
+    return $.ajax(apiUrl)
+      .then(function (json) {
+
+        json.results.forEach(function (item) {
           var pokemon = {
-          name: nameCapitalized,
-          detailsUrl: item.url,
-          index: index + 1
+            name: item.name,
+            detailsUrl: item.url
           };
           add(pokemon);
+     
         });
-      }).catch(err => {
-        console.log(err);
+      }).catch(function (e) {
+        console.error(e);
       });
   }
-
+ 
   function add(item) {
     repository.push(item);
   }
-
+ 
   function loadDetails(item) {
     var url = item.detailsUrl;
     return fetch(url)
       .then(res => res.json())
       .then(details => {
-        var types = details.types;
-        var typeList = [];
-
-        types.forEach(iterate => {
-          typeList.push(iterate.type.name);
-        });
-
+        console.log('jSON', details);
         item.imageUrl = details.sprites.front_default;
         item.height = details.height;
         item.weight = details.weight;
-        item.type = typeList.join(", ");
+        item.types = [];
+        for (var i = 0; i < details.types.length; i++) {
+          item.types.push(details.types[i].type.name);
+        }
       }).catch(err => console.log(err))
   }
-
+ 
   function addListItem(pokemon) {
-    var $pokemonList = document.querySelector("ul");
-    var $listItem = document.createElement("li");
-    var $button = document.createElement("button");
-    $button.innerText = pokemon.index + ". " + pokemon.name;
-    $button.classList.add("list-button");
-    $pokemonList.appendChild($listItem);
-    $listItem.appendChild($button)
-    addListener($button, pokemon);
-  }
-
-function addListener(button, pokemon) {
-  button.addEventListener("click", () => {
-      showDetails(pokemon);
+    var $pokemonList = $(".pokemon-list"); // Assign the <ul class="pokemon-list"> to a variable
+    var $listItem = $("<li>"); // Create a HTML <li> element
+    var $button = $('<button class="list-button">').text(pokemon.name); // Create a <button> element and add the pokemon's name to the button
+    $pokemonList.append($listItem); // Append the <li> element to the <ul>
+    $listItem.append($button); // Append the <button to the <li> previously appended
+    $button.on('click', function (event) { // Finally, add a click event to each button
+      showDetails(pokemon); // The click will run the showDetails function on 'click'
     });
   }
-  
-function showDetails(item) {
-  var $pokemonName = document.querySelector(".pokemon-name");
-  var $pokemonImg = document.querySelector(".pokemon-img");
-  var $pokemonHeight = document.querySelector(".pokemon-height");
-  var $pokemonWeight = document.querySelector(".pokemon-weight");
-  var $pokemonType = document.querySelector(".pokemon-type");
-  
-  pokemonRepository.loadDetails(item)
-    .then(() => {
-       $modalContainer.removeClass("modal-visible");
-       $overlay.addclassList("overlay-visible");
-       $modalContainer.removeclassList("modal");
-       $pokemonName.text(item.name);
-       $pokemonImg.src = item.imageUrl;
-       $pokemonHeight.textContent = item.height;
-       $pokemonWeight.textContent = item.weight;
-       $pokemonType.textContent = item.type;
-    });
-}
 
-function hideDetails() {
-    $modalContainer.remove.classList("modal-visible");
-    $overlay.remove.classList("overlay-visible");
-    $modalContainer.add.classList("modal");
+  function showDetails(item) {
+    pokemonRepository.loadDetails(item)
+      .then(() => {
+        // then we add the pokemon to the HTML using the JQuery variables we set above
+        $modalContainer.addClass("modal-visible");
+        $overlay.addClass("overlay-visible");
+        $modalContainer.removeClass("modal");
+        $pokemonName.text(item.name);
+        $pokemonImg.attr("src", item.imageUrl);
+        $pokemonHeight.text(item.height);
+        $pokemonWeight.text(item.weight);
+      });
   }
-
-  document.querySelector(".modal-close").addEventListener("click", () => {
+ 
+  function hideDetails() {
+    $modalContainer.removeClass("modal-visible");
+    $overlay.removeClass("overlay-visible");
+    $modalContainer.addClass("modal");
+    $pokemonName.text('');
+    $pokemonImg.attr("src", '');
+    $pokemonHeight.text('');
+    $pokemonWeight.text('');
+    $pokemonType.text(''); 
+  }
+  $(".modal-close").on("click", () => {
     hideDetails();
   });
-
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && $modalContainer.classList.contains("modal-visible")) {
+ 
+  $(document).keyup(function (event) {
+    console.log('PRSSES', event);
+    if (event.key === 'Escape' && $modalContainer.hasClass('modal-visible')) {
       hideDetails();
     }
   });
-
-  $overlay.addEventListener("click", (e) => {
+ 
+  $overlay.on('click', (e) => {
     var target = e.target;
+    console.log(target);
     if (target === $overlay) {
       hideDetails();
     }
   });
-  
-function getAll() {
-  return repository;
-}
+ 
+  function getAll() {
+    return repository;
+  }
 
-return {
-  loadList: loadList,
-  loadDetails: loadDetails,
-  addListItem: addListItem,
-  getAll: getAll
-};
+  return {
+    loadList,
+    loadDetails,
+    addListItem,
+    hideDetails,
+    getAll
+  };
 })();
 
 pokemonRepository.loadList()
   .then(() => {
     pokemonRepository.getAll().forEach(pokemon => {
       pokemonRepository.addListItem(pokemon);
-    });
-  }); 
+    })
+  });

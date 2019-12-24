@@ -13,24 +13,23 @@ var pokemonRepository = (() => {
  
   var $overlay = $('.overlay'); // <div class="overlay"> ... </div>
   var $modalContainer = $(".modal"); // <div class='modal'> ... </div>
-  // Glen: I think a var has to be assigned somewhere in here to associate with what I am trying 
-  // to do with line 58 below < < < 
   var $pokemonName = $(".pokeman-name") // <h1 class="pokemon-name"></h1>
   var $pokemonImg = $(".pokemon-img"); // <img class="pokemon-img" src="" alt="">
   var $pokemonHeight = $(".pokemon-height"); // <p class="height"> ... </p>
   var $pokemonWeight = $(".pokemon-weight"); // <p class="weight"> ... </p>
-  var $pokemonType = $(".pokemon-type"); // <p class=type"> ... </p> 
+  var $pokemonTypes = $(".pokemon-types"); // <p class=type"> ... </p> 
  
   function loadList() {
     return $.ajax(apiUrl)
       .then(function (json) {
+
         json.results.forEach(function (item) {
           var pokemon = {
             name: item.name,
             detailsUrl: item.url
           };
           add(pokemon);
-          console.log(pokemon);
+     
         });
       }).catch(function (e) {
         console.error(e);
@@ -46,18 +45,21 @@ var pokemonRepository = (() => {
     return fetch(url)
       .then(res => res.json())
       .then(details => {
+        console.log('jSON', details);
         item.imageUrl = details.sprites.front_default;
         item.height = details.height;
+        item.weight = details.weight;
+        item.types = [];
+        for (var i = 0; i < details.types.length; i++) {
+          item.types.push(details.types[i].type.name);
+        }
       }).catch(err => console.log(err))
   }
  
   function addListItem(pokemon) {
     var $pokemonList = $(".pokemon-list"); // Assign the <ul class="pokemon-list"> to a variable
     var $listItem = $("<li>"); // Create a HTML <li> element
-  // > > > Glen: I think line 58 is the code which displayed the blue buttons previously < < < 
-  // > > > If so, I tried unsuccessfully to rewrite this code but failed!? < < < 
-  // > > > Please see the "Before" screenshot for reference < < < 
-    var $button = $('<button>').text(pokemon.name); // Create a <button> element and add the pokemon's name to the button
+    var $button = $('<button class="list-button">').text(pokemon.name); // Create a <button> element and add the pokemon's name to the button
     $pokemonList.append($listItem); // Append the <li> element to the <ul>
     $listItem.append($button); // Append the <button to the <li> previously appended
     $button.on('click', function (event) { // Finally, add a click event to each button
@@ -65,9 +67,6 @@ var pokemonRepository = (() => {
     });
   }
 
-  // > > > Glen: Is it in this part of the code which displayed the blue buttons previously? < < < 
-  // > > > If so, I tried unsuccessfully to rewrite this code but failed!? < < < 
-  // > > > Please see the "Before" screenshot for reference < < < 
   function showDetails(item) {
     pokemonRepository.loadDetails(item)
       .then(() => {
@@ -79,7 +78,7 @@ var pokemonRepository = (() => {
         $pokemonImg.attr("src", item.imageUrl);
         $pokemonHeight.text(item.height);
         $pokemonWeight.text(item.weight);
-        $pokemonType.text(item.type);
+        $pokemonTypes.text(item.types);
       });
   }
  
@@ -91,7 +90,6 @@ var pokemonRepository = (() => {
     $pokemonImg.attr("src", '');
     $pokemonHeight.text('');
     $pokemonWeight.text('');
-    $pokemonType.text(''); 
   }
   $(".modal-close").on("click", () => {
     hideDetails();
